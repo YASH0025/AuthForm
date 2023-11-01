@@ -1,0 +1,310 @@
+
+
+
+
+
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Signup Form</title>
+  <style>
+    .error {
+      color: red;
+    }
+  </style>
+</head>
+<body>
+  <form id="signupForm">
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" >
+    <p class="error" id="firstNameError"></p><br>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" >
+    <p class="error" id="lastNameError"></p><br>
+
+    <label for="email">Email:</label>
+    <input type="email" id="email" >
+    <p class="error" id="emailError"></p><br>
+
+    <label for="password">Password:</label>
+    <input type="password" id="password" >
+    <p class="error" id="passwordError"></p><br>
+
+    <label for="gender">Gender:</label>
+    <select id="gender">
+      <option value="male">Male</option>
+      <option value="female">Female</option>
+      <option value="other">Other</option>
+    </select><br>
+
+    <label for="dob">Date of Birth:</label>
+    <input type="date" id="dob" >
+    <p class="error" id="dobError"></p><br>
+
+    <label for="address">Address:</label>
+    <textarea id="address" ></textarea>
+    <p class="error" id="addressError"></p><br>
+
+    <input type="submit" value="Sign Up">
+  </form>
+
+  <script>
+    // JavaScript code for form submission and validation
+    document.getElementById("signupForm").addEventListener("submit", function(event) {
+      event.preventDefault();
+
+      // Get form values
+      var firstName = document.getElementById("firstName").value;
+      var lastName = document.getElementById("lastName").value;
+      var email = document.getElementById("email").value;
+      var password = document.getElementById("password").value;
+      var gender = document.getElementById("gender").value;
+      var dob = document.getElementById("dob").value;
+      var address = document.getElementById("address").value;
+
+      // Validation functions
+      function validateFirstName(firstName) {
+        return (firstName.length > 0 && firstName.length <= 50);
+      }
+
+      function validateLastName(lastName) {
+        return (lastName.length > 0 && lastName.length <= 50);
+      }
+
+      function validateEmail(email) {
+        var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return emailRegex.test(email) && email.length <= 50;
+      }
+
+      function validatePassword(password) {
+        var passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*]).{8,}$/;
+        return passwordRegex.test(password) && password.length <= 50;
+      }
+
+      function validateAddress(address) {
+        return address.length > 0;
+      }
+
+      // Create an array to collect validation errors
+      var errors = [];
+
+      // Perform validation and collect errors
+      if (!validateFirstName(firstName)) {
+        errors.push("Please enter a valid first name (max length: 50 characters).");
+      }
+
+      if (!validateLastName(lastName)) {
+        errors.push("Please enter a valid last name (max length: 50 characters).");
+      }
+
+      if (!validateEmail(email)) {
+        errors.push("Please enter a valid email address (max length: 50 characters).");
+      }
+
+      if (!validatePassword(password)) {
+        errors.push("Please enter a valid password (at least 8 characters, including lowercase, uppercase, numeric, and special characters).");
+      }
+
+      if (!validateAddress(address)) {
+        errors.push("Please enter your address.");
+      }
+
+      // Display errors or proceed with registration
+      var errorContainer = document.getElementById("errorContainer");
+      if (errors.length > 0) {
+        errorContainer.innerHTML = errors.join("<br>");
+      } else {
+        // Generate a random token
+        var token = generateToken();
+
+        // Retrieve existing user data from local storage or initialize an empty array
+        var users = JSON.parse(localStorage.getItem("users")) || [];
+
+        // Add the new user to the array
+        var newUser = {
+          firstName: firstName,
+          lastName: lastName,
+          email: email,
+          password: password,
+          gender: gender,
+          dob: dob,
+          address: address,
+          token: token
+        };
+        users.push(newUser);
+
+        // Store the updated user array in local storage
+        localStorage.setItem("users", JSON.stringify(users));
+
+        // Clear form fields
+        document.getElementById("signupForm").reset();
+
+        // Clear error messages
+        errorContainer.innerHTML = "";
+
+        // Redirect to the profile page (replace 'profile.html' with your actual profile page URL)
+        window.location.href = 'profile.html';
+      }
+    });
+
+    // Random token generation function
+    function generateToken() {
+      var characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+      var token = "";
+      for (var i = 0; i < 10; i++) {
+        token += characters.charAt(Math.floor(Math.random() * characters.length));
+      }
+      return token;
+    }
+  </script>
+
+  <div id="errorContainer" class="error"></div>
+</body>
+</html>
+
+// Remove error messages as the user starts typing
+// document.getElementById("firstName").addEventListener("input", function () {
+//   let errorElement = document.getElementById("fame_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// });
+
+// document.getElementById("lastName").addEventListener("input", function () {
+//   let errorElement = document.getElementById("lame_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// });
+
+// document.getElementById("email").addEventListener("input", function () {
+//   let errorElement = document.getElementById("email_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// });
+
+// document.getElementById("password").addEventListener("input", function () {
+//   let errorElement = document.getElementById("password_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// });
+
+// document.getElementById("firstName").addEventListener("input", removeFnameError());
+// document.getElementById("lastName").addEventListener("input", removeLnameError());
+// document.getElementById("email").addEventListener("input", removeEmailError());
+// document.getElementById("password").addEventListener("input", removePassError());
+
+// function removeFnameError(){
+//   let errorElement = document.getElementById("fame_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// }
+// function removeLnameError() {
+//   let errorElement = document.getElementById("lame_error");
+//   if (errorElement) {
+//     errorElement.remove();
+//   }
+// }
+//   function removeEmailError() {
+//     let errorElement = document.getElementById("email_error");
+//     if (errorElement) {
+//       errorElement.remove();
+//     }
+//   }
+
+//     function removePassError() {
+//       let errorElement = document.getElementById("password_error");
+//       if (errorElement) {
+//         errorElement.remove();
+//       }
+//     }
+
+
+//     document.getElementById("signupForm").addEventListener("input", removeError);
+
+// document.getElementById("signupForm").addEventListener("input", removeError);
+// document.getElementById("firstName").addEventListener("input", removeError);
+// document.getElementById("lastName").addEventListener("input", removeError);
+// document.getElementById("email").addEventListener("input", removeError);
+// document.getElementById("password").addEventListener("input", removeError);
+// document.getElementById("address").addEventListener("input", removeError);
+
+// function removeError(event) {
+//   const inputField = event.target;
+//   const errorElement = inputField.nextElementSibling;
+
+//   // Check if the input field and error element exist
+//   if ( errorElement) {
+//     // Check if the input field is empty or contains only whitespace
+//     if (inputField.value.trim() !== "") {
+//       errorElement.remove();
+//     }
+//   }
+// } 
+// Add event listener to the form
+// Add event listeners to the input fields
+// document.getElementById("firstName").addEventListener("input", removeError);
+// document.getElementById("lastName").addEventListener("input", removeError);
+// document.getElementById("email").addEventListener("input", removeError);
+// document.getElementById("password").addEventListener("input", removeError);
+// document.getElementById("address").addEventListener("input", removeError);
+
+// function removeError(event) {
+//   const inputField = event.target;
+//   const errorElement = inputField.nextElementSibling;
+
+//   // Check if the input field and error element exist
+//   if (inputField && errorElement && errorElement.id === `${inputField.id}_error`) {
+//     // Check if the input field is not empty or does not contain only whitespace
+//     if (inputField.value.trim() !== "") {
+//       errorElement.textContent = "";
+//     }
+//   }
+// }
+
+
+// Add event listeners to the input fields
+// document.getElementById("firstName").addEventListener("input", removeError);
+// document.getElementById("lastName").addEventListener("input", removeError);
+// document.getElementById("email").addEventListener("input", removeError);
+// document.getElementById("password").addEventListener("input", removeError);
+// document.getElementById("address").addEventListener("input", removeError);
+
+// function removeError(event) {
+//   const inputField = event.target;
+//   const errorElement = inputField.parentElement.querySelector(".error");
+
+//   // Check if the input field and error element exist
+//   if (inputField && errorElement) {
+//     // Check if the input field is not empty or does not contain only whitespace
+//     if (inputField.value.trim() !== "") {
+//       errorElement.textContent = "";
+//     }
+//   }
+// }
+
+
+//   user1 = JSON.parse(localStorage.getItem("users")) ? JSON.parse(localStorage.getItem("users")) : []
+  //   if(S.some((v)=>{
+  //      return v.email==email.value
+  //  })){
+  //      // alert("Duplicate Data");
+  //  }else{ 
+  //       user1.push( { 
+
+  //           token: token,
+  //          firstName: firstName.value,
+  //          lastName: lastName.value,
+
+  //          email: email.value,
+  //          password: password.value,
+  //          gender: gender.value,
+  //          dob: dob.value,
+  //          address: address.value,
+  //       });
+  //       localStorage.setItem("users",JSON.stringify(user1));
+  //      }
